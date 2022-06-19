@@ -1,0 +1,19 @@
+{
+  "name": "01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 20000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "nock": "^13.2.7"
+  }
+}
