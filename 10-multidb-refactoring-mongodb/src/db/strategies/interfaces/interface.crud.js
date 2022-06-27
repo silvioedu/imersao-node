@@ -20,7 +20,7 @@ class ICrud {
     isConnected() {
         throw new NotImplementedException()
     }
-    connect() {
+    static connect() {
         throw new NotImplementedException()
     }
 }
