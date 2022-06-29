@@ -164,9 +164,11 @@ describe('Suite API Heroes', function () {
         const statusCode = result.statusCode
         const dados = JSON.parse(result.payload)
 
-        ok(statusCode, 200)
-        deepEqual(dados.message, 'Nao foi possível atualizar o heroi')
-        deepEqual(dados.modifiedCount, 0)
+        console.log('statusCode', statusCode)
+        console.log('dados', dados)
+
+        ok(statusCode, 412)
+        deepEqual(dados.message, 'Id não localizado')
     })
 
     it('api /herois/:id delete ', async() => {
@@ -197,9 +199,8 @@ describe('Suite API Heroes', function () {
         const statusCode = result.statusCode
         const dados = JSON.parse(result.payload)
 
-        ok(statusCode, 200)
-        deepEqual(dados.message, 'Nao foi possível remover o heroi')
-        deepEqual(dados.deletedCount, 0)
+        ok(statusCode, 412)
+        deepEqual(dados.message, 'Id não localizado')
     })
 
 })

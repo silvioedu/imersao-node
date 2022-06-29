@@ -1,5 +1,6 @@
 const BaseRoute = require('./base/baseRoute')
 const Joi = require('joi')
+const Boom = require('boom')
 
 const failAction = (request, headers, error) => {
     throw error
@@ -33,7 +34,7 @@ class HeroisRoutes extends BaseRoute {
                     return this.db.read(query, skip, limit)
                 } catch(error) {
                     console.error('Deu ruim', error)
-                    return 'Erro interno no GET'
+                    return Boom.internal('Deu problema no list')
                 }
             }
         }
@@ -63,7 +64,7 @@ class HeroisRoutes extends BaseRoute {
                     }
                 } catch(error) {
                     console.error('Deu ruim', error)
-                    return 'Erro interno no POST'
+                    return Boom.internal('Deu problema no create')
                 }
             }
         }
@@ -95,13 +96,17 @@ class HeroisRoutes extends BaseRoute {
 
                     const result = await this.db.update(id, dados)
 
+                    if (result.modifiedCount !== 1) {
+                        return Boom.preconditionFailed('Id não localizado')
+                    }
+
                     return {
-                        message: result.modifiedCount === 1 ? 'Heroi atualizado com sucesso' : 'Nao foi possível atualizar o heroi',
+                        message: 'Heroi atualizado com sucesso',
                         modifiedCount: result.modifiedCount
                     }
                 } catch(error) {
                     console.error('Deu ruim', error)
-                    return 'Erro interno no PATCH'
+                    return Boom.internal('Deu problema no patch')
                 }
             }
         }
@@ -124,13 +129,17 @@ class HeroisRoutes extends BaseRoute {
                     const { id } = request.params
                     const result = await this.db.delete(id)
 
+                    if (result.deletedCount !== 1) {
+                        return Boom.preconditionFailed('Id não localizado')
+                    }
+
                     return {
-                        message: result.deletedCount === 1 ? 'Heroi removido com sucesso' : 'Nao foi possível remover o heroi',
+                        message: 'Heroi removido com sucesso',
                         deletedCount: result.deletedCount
                     }
                 } catch(error) {
                     console.error('Deu ruim', error)
-                    return 'Erro interno no DELETE'
+                    return Boom.internal('Deu problema no delete')
                 }
             }
         }
