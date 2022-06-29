@@ -4,11 +4,16 @@ const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
 const HapiJwt = require('hapi-auth-jwt2')
 
+const AuthRoutes = require('./routes/authRoutes')
+const HeroisRoutes = require('./routes/heroisRoutes')
+
 const Context = require('./db/strategies/base/contextStrategy')
+
 const MongoDb = require('./db/strategies/mongodb/mongodb')
 const HeroisSchema = require('./db/strategies/mongodb/schemas/heroisSchema')
-const HeroisRoutes = require('./routes/heroisRoutes')
-const AuthRoutes = require('./routes/authRoutes')
+
+const Postgres = require('./db/strategies/postgres/postgres')
+const UsuarioSchema = require('./db/strategies/postgres/schemas/usuarioSchema')
 
 const JWT_SECRET = 'MEU_SEGREDAO_123'
 const app = new Hapi.Server({
@@ -22,6 +27,11 @@ function mapRoutes(instance, methods) {
 async function main() {
     const connection = MongoDb.connect()
     const context = new Context(new MongoDb(connection, HeroisSchema))
+
+    const connectionPostgres = await Postgres.connect()
+    const model = await Postgres.defineModel(connectionPostgres, UsuarioSchema)
+    const contextPostgres = new Context(new Postgres(connectionPostgres, model))
+
     const swaggerOptions = {
         info: {
                 title: 'API Herois #CursoErickWendel',
@@ -44,8 +54,17 @@ async function main() {
         // options: {
         //     expiresIn: 20
         // }
-        validate: (dado, request) => {
+        validate: async (dado, request) => {
 
+            const [result] = await contextPostgres.read({
+                username: dado.username.toLowerCase(),
+            })
+
+            if(!result) {
+                return {
+                    isValid: false
+                }
+            }
 
             return {
                 isValid: true
@@ -56,7 +75,7 @@ async function main() {
     
     app.route([
         ...mapRoutes(new HeroisRoutes(context), HeroisRoutes.methods()),
-        ...mapRoutes(new AuthRoutes(JWT_SECRET), AuthRoutes.methods())
+        ...mapRoutes(new AuthRoutes(JWT_SECRET, contextPostgres), AuthRoutes.methods())
     ])
 
 
