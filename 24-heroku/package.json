@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha src/tests/*.test.js",
-    "test:prod": "cross-env NODE_ENV=prd npm t"
+    "test:prod": "cross-env NODE_ENV=prd npm t",
+    "prod": "cross-env NODE_ENV=prd node src/api.js"
   },
   "keywords": [],
   "author": "",
