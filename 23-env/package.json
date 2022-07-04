@@ -4,7 +4,8 @@
   "description": "sudo systemctl start docker",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/tests/*.test.js"
+    "test": "mocha src/tests/*.test.js",
+    "test:prod": "cross-env NODE_ENV=prd npm t"
   },
   "keywords": [],
   "author": "",

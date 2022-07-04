@@ -37,3 +37,9 @@ sudo docker exec -it mongodb \
     --eval "db.getSiblingDB('herois').createUser({user: 'silviosilva', pwd: 'minhasenhasecreta', roles: [{role: 'readWrite', db: 'herois'}]})"
 
 docker rm $(docker ps -aq)
+
+
+http://localhost:5000/documentation
+
+cursoErickWendel
+6UiLCiUgFsZ5XAqj
